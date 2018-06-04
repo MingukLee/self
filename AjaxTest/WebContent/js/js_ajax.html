@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<!-- 입력 : <input type="text" id="data1">
+<button onclick="test1();" >클릭</button><br/><br/>
+
+<div id="div1" style="border: 1px solid red; width:400px; height:60px;"></div>
+ -->
+id 입력 : <input type="text" id="data1" onchange="test1();">  
+<span id="span1"></span>
+
+<script type="text/javascript">
+	function test1(){
+		var data = document.getElementById("data1").value;
+		// Ajax처리 순서 4단계	
+		// 1. XMLHttpRequest 객체 생성
+		// 2. 요청 정보 설정 
+		// 3. 데이터 처리에 따른 작동할 메소드 설정 (콜백 함수)
+		// 4. 서버에서 요청 처리
+		// -------------------------
+		// 1. XMLHttpRequest 객체 생성  // -> IE 를 쓰면 버전멸로 설정을 해줘야 한다.
+		// IE7이상 9이하 버전일 때
+		// 또는  IE가 아닐떄 (크롬, 사파리 등등)
+		var xhttp = new XMLHttpRequest();	
+		// IE 버전이 6버전 이하일 때 
+		// var xhttp = new ActiveXObject(Microsoft.XMLHTTP);
+		// IE 버전이 9버전 이후일 때 
+		// var xhttp = new ActiveXObject("Msxml2.XMLHTTP");
+		// -------------------------
+		// 2. 요청 정보 설정 (method 방식, url정보, 동기/비동기 설정)
+		// "GET" or "POST" 
+		// 마지막 false/true 값은 동기/비동기 값을 의미함
+		// 당연히 Ajax 처리이기 때문에 무조건 true 값을 사용 (비동기 처리)
+		// get 방식
+		xhttp.open("GET","/jsTest1?data="+data,true);	
+		// post 방식은 나중에 SEND  메소드 호출시 값을 넘겨줌
+		// xhttp.open("POST","/jsTest1",true);
+		// -------------------------
+		// 3. 데이터 처리에 따른 작동할 메소드 설정 (콜백 함수)
+		
+		// readyState값
+		// 0 : 요청이 시작되지 않은 상태
+		// 1 : 서버와 접속된 상태 
+		// 2 : send 메소드가 호출되고 헤더는 도착하지 않은 상태
+		// 3 : 일부 데이터를 받은 상태 
+		// 4 : 요청을 완료하고 응답하는 상태 
+		
+		// status 속성 값 
+		// 200 (ok) : 요청 성공
+		// 404 (not found) : 페이지 없음
+		// 500 (Internal Server Error) : 서버 오류 발생 등등...
+		
+		xhttp.onreadystatechange = function(){
+			if(this.readyState==4){
+				if(this.status==200){
+					console.log("서버에 데이터 전송 성공");
+					// 정상처리 되었을 때의 
+					var result = xhttp.responseText;
+					//
+					if(result=="1"){
+						document.getElementById('span1').innerHTML = "사용가능한 id입니다.";	
+						document.getElementById('span1').style.color ="blue";	
+					}else{
+						document.getElementById('span1').innerHTML = "사용 불가능한 id입니다.";	
+						document.getElementById('span1').style.color = "red";	
+					}
+					
+				}else if(this.status==404){
+					console.log("서버에 데이터 전송 실패")
+				}
+			}
+		}
+		// -------------------------
+		// 4. 서버에서 요청 처리
+		xhttp.send(); // get방식 
+		
+		// post 방식 (post 방식은 requestHeader를 변경해야 함)
+		// xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		// xhttp.send("data="+data)
+	
+	}
+</script>
+</body>
+</html>
